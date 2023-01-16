@@ -25,8 +25,8 @@ type QueryPageInfoFlow struct {
 	topicId  int64
 	pageInfo *PageInfo
 
-	topic   *repository.Topic
-	posts   []*repository.Post
+	topic *repository.Topic
+	posts []*repository.Post
 }
 
 func (f *QueryPageInfoFlow) Do() (*PageInfo, error) {
@@ -74,4 +74,11 @@ func (f *QueryPageInfoFlow) packPageInfo() error {
 		PostList: f.posts,
 	}
 	return nil
+}
+
+func Insert(post *repository.PostQuery) error {
+	if repository.NewPostDaoInstance().InsertQuery(post) {
+		return nil
+	}
+	return errors.New("insert error")
 }

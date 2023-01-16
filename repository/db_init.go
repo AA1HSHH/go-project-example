@@ -3,19 +3,21 @@ package repository
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"os"
 )
 
 var (
 	topicIndexMap map[int64]*Topic
 	postIndexMap  map[int64][]*Post
+	postnum       int64
 )
 
-func Init(filePath string) error{
-	if err := initTopicIndexMap(filePath);err!=nil{
+func Init(filePath string) error {
+	if err := initTopicIndexMap(filePath); err != nil {
 		return err
 	}
-	if err := initPostIndexMap(filePath);err!=nil{
+	if err := initPostIndexMap(filePath); err != nil {
 		return err
 	}
 	return nil
@@ -40,7 +42,7 @@ func initTopicIndexMap(filePath string) error {
 	return nil
 }
 
-func initPostIndexMap(filePath string) error{
+func initPostIndexMap(filePath string) error {
 	open, err := os.Open(filePath + "post")
 	if err != nil {
 		return err
@@ -49,6 +51,7 @@ func initPostIndexMap(filePath string) error{
 	postTmpMap := make(map[int64][]*Post)
 	for scanner.Scan() {
 		text := scanner.Text()
+		postnum++
 		var post Post
 		if err := json.Unmarshal([]byte(text), &post); err != nil {
 			return err
@@ -60,7 +63,9 @@ func initPostIndexMap(filePath string) error{
 		}
 		posts = append(posts, &post)
 		postTmpMap[post.ParentId] = posts
+
 	}
+	fmt.Println("now sys index :", postnum)
 	postIndexMap = postTmpMap
 	return nil
 }

@@ -1,6 +1,7 @@
 package cotroller
 
 import (
+	"github.com/Moonlight-Zhao/go-project-example/repository"
 	"strconv"
 
 	"github.com/Moonlight-Zhao/go-project-example/service"
@@ -11,6 +12,7 @@ type PageData struct {
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
 }
+
 func QueryPageInfo(topicIdStr string) *PageData {
 	topicId, err := strconv.ParseInt(topicIdStr, 10, 64)
 	if err != nil {
@@ -32,4 +34,19 @@ func QueryPageInfo(topicIdStr string) *PageData {
 		Data: pageInfo,
 	}
 
+}
+
+func InsertPost(post *repository.PostQuery) *PageData {
+	err := service.Insert(post)
+	if err != nil {
+		return &PageData{
+			Code: -1,
+			Msg:  err.Error(),
+		}
+	}
+	return &PageData{
+		Code: 0,
+		Msg:  "success",
+		Data: "post ok",
+	}
 }
